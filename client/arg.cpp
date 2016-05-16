@@ -123,12 +123,23 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
         log_info() << "icerun, running locally." << endl;
     }
 
+    bool is_wl_start = true;
+    bool is_linker_flag = false;
+    string wl_arg;
+
     for (int i = had_cc ? 2 : 1; argv[i]; i++) {
         const char *a = argv[i];
 
         if (icerun) {
             args.append(a, Arg_Local);
         } else if (a[0] == '-') {
+            if ( is_linker_flag && strcmp(a, "-o") == 0 ) {
+                // 这是最后一个参数了，不会再有Xlinker，将wl_arg添加到args里面去，链接参数是本地的
+                trace() << "添加进去了" << endl;
+                args.append( wl_arg, Arg_Local);
+                is_linker_flag = false;
+            }
+
             if (!strcmp(a, "-E")) {
                 always_local = true;
                 args.append(a, Arg_Local);
@@ -257,6 +268,19 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 args.append(a, Arg_Local);
             } else if (!strcmp(a, "-gsplit-dwarf")) {
                 seen_split_dwarf = true;
+            } else if ( strcmp( a, "-Xlinker" ) == 0 ) { // here
+                trace() << "哈哈，找到了Xlinker 替换为Wl哈哈哈哈哈哈哈哈哈哈哈 " << endl;
+                if ( is_wl_start ) {
+                    is_wl_start = false;
+                    wl_arg.append( "-Wl" );
+                }
+
+                wl_arg.append( "," );
+                wl_arg.append( argv[++i] );
+                trace() << "哦哦哦，现在wl_arg是：" << wl_arg << endl;
+
+                is_linker_flag = true;
+                continue;
             } else if (str_equal(a, "-x")) {
                 args.append(a, Arg_Rest);
                 bool unsupported = true;
@@ -275,7 +299,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 }
             } else if (!strcmp(a, "-march=native") || !strcmp(a, "-mcpu=native")
                        || !strcmp(a, "-mtune=native")) {
-                log_info() << "-{march,mpcu,mtune}=native optimizes for local machine, " 
+                log_info() << "-{march,mpcu,mtune}=native optimizes for local machine, "
                            << "building locally"
                            << endl;
                 always_local = true;
