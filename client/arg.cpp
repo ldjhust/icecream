@@ -284,8 +284,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             } else if ( strcmp( a, "--serialize-diagnostics") == 0
                         || strcmp( a, "-iquote") == 0
                         || strcmp( a, "-MT") == 0
-                        || strcmp( a, "-MF") == 0
-                        || strcmp( a, "-isysroot") == 0) {
+                        || strcmp( a, "-MF") == 0) {
                 // 这个是依赖于本机的日志文件，会让icecc以为有两个输入文件导致只在本地编译，我们直接跳过忽略
                 ++i;
                 trace() << "忽略这个参数" << a << endl;
@@ -550,26 +549,35 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 
             // Skip compiler arguments which are followed by another
             // argument not starting with -.
-            if (it->first == "-Xclang" || it->first == "-x") {
+//             if (it->first == "-Xclang" || it->first == "-x" || it->first == "-isysroot") {
+//                 ++it;
+//                 ++it;
+//             } else if (it->second != Arg_Rest || it->first.at(0) == '-'
+//                        || it->first.at(0) == '@') {
+//                 ++it;
+//             } else if (ifile.empty()) {
+// #if CLIENT_DEBUG
+//                 log_info() << "input file: " << it->first << endl;
+// #endif
+//                 job.setInputFile(it->first);
+//                 ifile = it->first;
+//                 it = args.erase(it);
+//             } else {
+//                 log_info() << "found another non option on command line. Two input files? "
+//                            << it->first << endl;
+//                 trace() << "因为可能有两个input files，所以只能在本地运行" << endl;
+//                 always_local = true;
+//                 args = backup;
+//                 job.setInputFile(string());
+//                 break;
+//             }
+            // 你只是要找input file，我告诉你
+            if (it->first == "-c") {
                 ++it;
-                ++it;
-            } else if (it->second != Arg_Rest || it->first.at(0) == '-'
-                       || it->first.at(0) == '@') {
-                ++it;
-            } else if (ifile.empty()) {
-#if CLIENT_DEBUG
-                log_info() << "input file: " << it->first << endl;
-#endif
-                job.setInputFile(it->first);
                 ifile = it->first;
+                trace() << "待编译文件是: " << it->first << endl;
+                job.setInputFile(it->first);
                 it = args.erase(it);
-            } else {
-                log_info() << "found another non option on command line. Two input files? "
-                           << it->first << endl;
-                trace() << "因为可能有两个input files，所以只能在本地运行" << endl;
-                always_local = true;
-                args = backup;
-                job.setInputFile(string());
                 break;
             }
         }
