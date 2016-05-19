@@ -284,7 +284,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             } else if ( strcmp( a, "--serialize-diagnostics") == 0
                         || strcmp( a, "-iquote") == 0
                         || strcmp( a, "-MT") == 0
-                        || strcmp( a, "-MF") == 0) {
+                        || strcmp( a, "-MF") == 0
+                        || strcmp( a, "-isysroot") == 0) {
                 // 这个是依赖于本机的日志文件，会让icecc以为有两个输入文件导致只在本地编译，我们直接跳过忽略
                 ++i;
                 trace() << "忽略这个参数" << a << endl;
