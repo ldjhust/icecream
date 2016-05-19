@@ -281,6 +281,10 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 
                 is_linker_flag = true;
                 continue;
+            } else if ( strcmp( a, "--serialize-diagnostics") == 0) {
+                // 这个是依赖于本机的日志文件，会让icecc以为有两个输入文件导致只在本地编译，我们直接跳过忽略
+                trace() << "忽略这个dia文件参数：" << args[++i] << endl;
+                continue;
             } else if (str_equal(a, "-x")) {
                 args.append(a, Arg_Rest);
                 bool unsupported = true;
@@ -550,6 +554,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             } else {
                 log_info() << "found another non option on command line. Two input files? "
                            << it->first << endl;
+                trace() << "因为可能有两个input files，所以只能在本地运行"
                 always_local = true;
                 args = backup;
                 job.setInputFile(string());
