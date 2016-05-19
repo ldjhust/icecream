@@ -133,7 +133,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
         if (icerun) {
             args.append(a, Arg_Local);
         } else if (a[0] == '-') {
-            if ( is_linker_flag && strcmp(a, "-o") == 0 ) {
+            if ( is_linker_flag && strcmp(a, "-c") == 0 ) {
                 // 这是最后一个参数了，不会再有Xlinker，将wl_arg添加到args里面去，链接参数是本地的
                 trace() << "添加进去了" << endl;
                 args.append( wl_arg, Arg_Local);
@@ -574,9 +574,9 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             // 你只是要找input file，我告诉你
             if (it->first == "-c") {
                 ++it;
+                job.setInputFile(it->first);
                 ifile = it->first;
                 trace() << "待编译文件是: " << it->first << endl;
-                job.setInputFile(it->first);
                 it = args.erase(it);
                 break;
             }
