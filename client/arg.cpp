@@ -580,6 +580,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 it = args.erase(it);
                 break;
             }
+
+            ++it;
         }
 
         if (ifile.find('.') != string::npos) {
