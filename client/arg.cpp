@@ -281,10 +281,20 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 
                 is_linker_flag = true;
                 continue;
-            } else if ( strcmp( a, "--serialize-diagnostics") == 0) {
+            } else if ( strcmp( a, "--serialize-diagnostics") == 0
+                        || strcmp( a, "-iquote") == 0
+                        || strcmp( a, "-MT") == 0
+                        || strcmp( a, "-MF") == 0) {
                 // 这个是依赖于本机的日志文件，会让icecc以为有两个输入文件导致只在本地编译，我们直接跳过忽略
                 ++i;
-                trace() << "忽略这个dia文件参数" << endl;
+                trace() << "忽略这个参数" << a << endl;
+                continue;
+            } else if ( strcmp( a, "-fmodules-validate-once-per-build-session") == 0
+                        || strcmp( a, "-MMD") == 0
+                        || strncmp( a, "-fbuild-session-file", 20) == 0
+                        || strncmp( a, "-I", 2) == 0
+                        || strncmp( a, "-F", 2) == 0) {
+                trace() << "忽略" << a << endl;
                 continue;
             } else if (str_equal(a, "-x")) {
                 args.append(a, Arg_Rest);
@@ -395,7 +405,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                        || str_equal("-isystem", a)
                        || str_equal("-iquote", a)
                        || str_equal("-imultilib", a)
-                       || str_equal("-isysroot", a)
+                       // || str_equal("-isysroot", a)
                        || str_equal("-iwithprefixbefore", a)
                        || str_equal("-idirafter", a)) {
                 args.append(a, Arg_Local);
