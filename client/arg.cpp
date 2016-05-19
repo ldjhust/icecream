@@ -554,7 +554,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             } else {
                 log_info() << "found another non option on command line. Two input files? "
                            << it->first << endl;
-                trace() << "因为可能有两个input files，所以只能在本地运行"
+                trace() << "因为可能有两个input files，所以只能在本地运行" << endl;
                 always_local = true;
                 args = backup;
                 job.setInputFile(string());
