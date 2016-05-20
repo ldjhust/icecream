@@ -126,6 +126,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
     bool is_wl_start = true;
     bool is_linker_flag = false;
     string wl_arg;
+    string my_iFile;
 
     for (int i = had_cc ? 2 : 1; argv[i]; i++) {
         const char *a = argv[i];
@@ -138,6 +139,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 trace() << "添加进去了" << endl;
                 args.append( wl_arg, Arg_Local);
                 is_linker_flag = false;
+                my_iFile = ""
+                my_iFile.append( argv[i+1] ) // -c 下一个参数就是待编译文件
             }
 
             if (!strcmp(a, "-E")) {
@@ -572,8 +575,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 //                 break;
 //             }
             // 你只是要找input file，我告诉你
-            if (it->first == "-c") {
-                ++it;
+            if (it->first == my_iFile) {
                 job.setInputFile(it->first);
                 ifile = it->first;
                 trace() << "待编译文件是: " << it->first << endl;
