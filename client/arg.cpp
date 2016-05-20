@@ -134,13 +134,17 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
         if (icerun) {
             args.append(a, Arg_Local);
         } else if (a[0] == '-') {
-            if ( is_linker_flag && strcmp(a, "-o") == 0 ) {
-                // 这是最后一个参数了，不会再有Xlinker，将wl_arg添加到args里面去，链接参数是本地的
-                trace() << "添加进去了" << endl;
-                args.append( wl_arg, Arg_Local);
-                is_linker_flag = false;
-                my_iFile = argv[i+1]; // -c 下一个参数就是待编译文件
-                trace() << "找到了input files：" << my_iFile << endl;
+            if (strcmp(a, "-c") == 0) {
+                if ( is_linker_flag ) {
+                    // 这是最后一个参数了，不会再有Xlinker，将wl_arg添加到args里面去，链接参数是本地的
+                    trace() << "添加进去了" << endl;
+                    args.append( wl_arg, Arg_Local);
+                    is_linker_flag = false;
+                }
+                else {
+                    my_iFile = argv[i+1]; // -c 下一个参数就是待编译文件
+                    trace() << "找到了input files：" << my_iFile << endl;
+                }
             }
 
             if (!strcmp(a, "-E")) {
