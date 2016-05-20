@@ -139,8 +139,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 trace() << "添加进去了" << endl;
                 args.append( wl_arg, Arg_Local);
                 is_linker_flag = false;
-                my_iFile = ""
-                my_iFile.append( argv[i+1] ) // -c 下一个参数就是待编译文件
+                my_iFile = "";
+                my_iFile.append( argv[i+1] ); // -c 下一个参数就是待编译文件
             }
 
             if (!strcmp(a, "-E")) {
