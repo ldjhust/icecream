@@ -141,6 +141,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                 is_linker_flag = false;
                 my_iFile = "";
                 my_iFile.append( argv[i+1] ); // -c 下一个参数就是待编译文件
+                trace() << "找到了input files：" << my_iFile << endl;
             }
 
             if (!strcmp(a, "-E")) {
@@ -575,7 +576,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 //                 break;
 //             }
             // 你只是要找input file，我告诉你
-            if (it->first == my_iFile) {
+            if ((it->first).compare( my_iFile ) == 0) {
                 job.setInputFile(it->first);
                 ifile = it->first;
                 trace() << "待编译文件是: " << it->first << endl;
