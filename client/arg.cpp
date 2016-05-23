@@ -540,6 +540,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
     }
 
     if (!always_local) {
+        trace() << "本地编译吗：" << always_local << endl;
         ArgumentsList backup = args;
 
         /* TODO: ccache has the heuristic of ignoring arguments that are not
@@ -590,6 +591,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             ++it;
         }
 
+        trace() << "现在本地编译：" << always_local << endl;
+
         if (ifile.find('.') != string::npos) {
             string::size_type dot_index = ifile.find_last_of('.');
             string ext = ifile.substr(dot_index + 1);
@@ -610,6 +613,7 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
                        || ext == "mii" || ext == "mm"
                        || ext == "M") {
                 job.setLanguage(CompileJob::Lang_OBJC);
+                trace() << "带编译Objective" << endl;
             } else if (ext == "s" || ext == "S" // assembler
                        || ext == "ads" || ext == "adb" // ada
                        || ext == "f" || ext == "for" // fortran
@@ -664,6 +668,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
         always_local = true;
     }
 
+    trace() << "ofile这里always_local: " << always_local << endl;
+
     // redirecting compiler's output will turn off its automatic coloring, so force it
     // when it would be used, unless explicitly set
     if (compiler_has_color_output(job) && !explicit_color_diagnostics) {
@@ -685,6 +691,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             << ", lang=" << job.language()
             << endl;
 #endif
+
+    trace() << "最终确定的是否本地编译: " << always_local << endl;
 
     return always_local;
 }
