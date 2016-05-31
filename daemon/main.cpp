@@ -495,7 +495,7 @@ struct Daemon {
         scheduler = 0;
         discover = 0;
         scheduler_port = 8765;
-        daemon_port = 10245;
+        daemon_port = 8080;
         max_scheduler_pong = MAX_SCHEDULER_PONG;
         max_scheduler_ping = MAX_SCHEDULER_PING;
         current_kids = 0;
