@@ -285,6 +285,7 @@ void MsgChannel::writefull(const void *_buf, size_t count)
 
 bool MsgChannel::flush_writebuf(bool blocking)
 {
+    trace() << "进来了：开始传送源文件" << endl;
     const char *buf = msgbuf + msgofs;
     bool error = false;
 
@@ -348,6 +349,7 @@ bool MsgChannel::flush_writebuf(bool blocking)
 
     msgofs = buf - msgbuf;
     chop_output();
+    trace() << "结束了，出错了没：" << error << endl;
     return !error;
 }
 
