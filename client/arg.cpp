@@ -693,6 +693,8 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
 #endif
 
     trace() << "最终确定的是否本地编译: " << always_local << endl;
+    trace() << "最终确定的input file是：" << job.inputFile() << endl;
+    trace() << "最终确定的output file是：" << job.outputFile() << endl;
 
     return always_local;
 }
