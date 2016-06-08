@@ -682,7 +682,6 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
     job.setFlags(args);
     job.setOutputFile(ofile);
 
-#if CLIENT_DEBUG
     trace() << "scanned result: local args=" << concat_args(job.localFlags())
             << ", remote args=" << concat_args(job.remoteFlags())
             << ", rest=" << concat_args(job.restFlags())
@@ -690,8 +689,6 @@ bool analyse_argv(const char * const *argv, CompileJob &job, bool icerun, list<s
             << ", compiler=" << job.compilerName()
             << ", lang=" << job.language()
             << endl;
-#endif
-
     trace() << "最终确定的是否本地编译: " << always_local << endl;
     trace() << "最终确定的input file是：" << job.inputFile() << endl;
     trace() << "最终确定的output file是：" << job.outputFile() << endl;
